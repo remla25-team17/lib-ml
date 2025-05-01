@@ -1,0 +1,9 @@
+# requirements.txt
+pandas>=2.2.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+
+# Optional build tools for local dev
+setuptools>=68.0.0
+wheel
+build
