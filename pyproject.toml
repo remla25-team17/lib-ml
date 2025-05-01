@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lib-ml"
-version = "0.0.0"  # Placeholder
+version = "0.0.2"  # Placeholder
 description = "Shared preprocessing logic for model-training and model-service"
 requires-python = ">=3.10"
 dependencies = [
