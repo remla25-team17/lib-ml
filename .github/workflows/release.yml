@@ -31,9 +31,13 @@ jobs:
         run: |
           pip install build
 
+      - name: Inject version into pyproject.toml
+        run: |
+          sed -i "s/version = \"0.0.0\"/version = \"${{ env.version }}\"/" pyproject.toml
+
       - name: Build package
         run: |
-          python -m build
+          LIB_ML_VERSION=${{ env.version }} python -m build
 
       - name: Upload artifacts (optional)
         uses: actions/upload-artifact@v4
