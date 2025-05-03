@@ -8,9 +8,8 @@ version = "0.0.0"  # Placeholder
 description = "Shared preprocessing logic for model-training and model-service"
 requires-python = ">=3.10"
 dependencies = [
-  "pandas>=2.2.0",
-  "scikit-learn>=1.4.0",
-  "numpy>=1.26.0"
+  "nltk>=3.6",
+  "pandas>=1.0"
 ]
 
 [tool.setuptools]
