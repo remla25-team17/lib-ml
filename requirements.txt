@@ -1,0 +1,7 @@
+nltk 
+pandas
+
+# Optional build tools for local dev
+setuptools>=68.0.0
+wheel
+build
