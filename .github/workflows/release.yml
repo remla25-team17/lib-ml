@@ -2,37 +2,50 @@ name: Release Python Package
 
 on:
   push:
-    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+    branches:
+      - main
+      - develop/**
 
 jobs:
   tag-release:
-    runs-on: ubuntu-24.04
-    outputs:
-      version: ${{ steps.set-version.outputs.version }}
+    name: Generate Release
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Parse version info from tag
-        id: set-version
-        run: |
-          # GITHUB_REF is like refs/tags/v2.3.5, so strip the first 11 chars
-          VERSION=${GITHUB_REF:11}
-          MAJOR=$(echo "$VERSION" | cut -d . -f 1)
-          MINOR=$(echo "$VERSION" | cut -d . -f 2)
-          PATCH=$(echo "$VERSION" | cut -d . -f 3)
-
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-
-          echo "version=$VERSION" >> $GITHUB_ENV
-          echo "version_major=$MAJOR" >> $GITHUB_ENV
-          echo "version_minor=$MINOR" >> $GITHUB_ENV
-          echo "version_patch=$PATCH" >> $GITHUB_ENV
+      - name: Create GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v3.2.1
+        with:
+          versionSpec: '5.12.0'
+      - name: Run GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v3.2.1
+        with:
+          useConfigFile: true
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ steps.generate-token.outputs.token }}
+          tag_name: ${{ steps.gitversion.outputs.semVer }}
+          name: Release ${{ steps.gitversion.outputs.semVer }}
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.gitversion.outputs.semVer, '-') }}
 
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     needs: tag-release
     env:
-      version: ${{ needs.tag-release.outputs.version }}
+      version: ${{ steps.gitversion.outputs.majorMinorPatch }}
 
     steps:
       - uses: actions/checkout@v4
