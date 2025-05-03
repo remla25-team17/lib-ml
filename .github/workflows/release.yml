@@ -7,7 +7,8 @@ on:
 jobs:
   tag-release:
     runs-on: ubuntu-24.04
-
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
 
@@ -19,12 +20,16 @@ jobs:
           MINOR=$(echo "$VERSION" | cut -d . -f 2)
           PATCH=$(echo "$VERSION" | cut -d . -f 3)
           echo "version=$VERSION" >> $GITHUB_ENV
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "version_major=$MAJOR" >> $GITHUB_ENV
           echo "version_minor=$MINOR" >> $GITHUB_ENV
           echo "version_patch=$PATCH" >> $GITHUB_ENV
 
-  build:
+    build:
     runs-on: ubuntu-24.04
+    needs: tag-release
+    env:
+      version: ${{ needs.tag-release.outputs.version }}
 
     steps:
       - uses: actions/checkout@v4
@@ -40,14 +45,8 @@ jobs:
 
       - name: Inject version into pyproject.toml
         run: |
-          sed -i "s/version = \"0.0.0\"/version = \"${{ env.version }}\"/" pyproject.toml
+          sed -i "s/version = \"0.0.0\"/version = \"${version}\"/" pyproject.toml
 
       - name: Build package
         run: |
-          LIB_ML_VERSION=${{ env.version }} python -m build
-
-      - name: Upload artifacts (optional)
-        uses: actions/upload-artifact@v4
-        with:
-          name: lib-ml-dist
-          path: dist/
+          LIB_ML_VERSION=${version} python -m build
