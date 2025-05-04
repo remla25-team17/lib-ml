@@ -10,6 +10,8 @@ jobs:
   tag-release:
     name: Generate Release
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gitversion.outputs.majorMinorPatch }}
     steps:
       - name: Create GitHub App Token
         id: generate-token
