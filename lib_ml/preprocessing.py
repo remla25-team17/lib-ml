@@ -32,7 +32,7 @@ def preprocess_reviews(dataset):
     return corpus
 
 
-def preprocess_text(text, all_stopwords, ps):
+def preprocess_text(text, all_stopwords=None, ps=None):
     """
     Preprocesses a single text review.
 
@@ -44,6 +44,14 @@ def preprocess_text(text, all_stopwords, ps):
     Returns:
         str: The preprocessed review.
     """
+
+    if all_stopwords is None:
+        all_stopwords = stopwords.words('english')
+        if 'not' in all_stopwords:
+            all_stopwords.remove('not')
+
+    if ps is None:
+        ps = PorterStemmer()
 
     review = re.sub('[^a-zA-Z]', ' ', text)
     review = review.lower().split()
