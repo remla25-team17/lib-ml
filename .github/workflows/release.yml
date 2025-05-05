@@ -10,6 +10,8 @@ jobs:
   tag-release:
     name: Generate Release
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.export-version.outputs.version }}
     steps:
       - name: Create GitHub App Token
         id: generate-token
@@ -32,6 +34,9 @@ jobs:
         uses: gittools/actions/gitversion/execute@v3.2.1
         with:
           useConfigFile: true
+      - name: Export GitVersion Outputs
+        id: export-version
+        run: echo "version=${{ steps.gitversion.outputs.majorMinorPatch }}" >> $GITHUB_OUTPUT
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -45,7 +50,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: tag-release
     env:
-      version: ${{ steps.gitversion.outputs.majorMinorPatch }}
+      version: ${{ needs.tag-release.outputs.version }}
 
     steps:
       - uses: actions/checkout@v4
