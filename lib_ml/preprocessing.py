@@ -26,7 +26,7 @@ def preprocess_reviews(dataset):
     max_index = len(dataset) 
 
     for i in range(0, max_index):
-        review = preprocess_reviews(dataset['Review'][i], all_stopwords, ps)
+        review = preprocess_text(dataset['Review'][i], all_stopwords, ps)
         corpus.append(review)
 
     return corpus
