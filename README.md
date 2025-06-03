@@ -1,15 +1,25 @@
-# lib-ml
-
-## Overview
+# Lib-ML
 
 `lib-ml` is a Python library that provides shared preprocessing logic for machine learning model training and service. It includes utilities for text preprocessing and is designed to be reusable across different machine learning projects.
 
-## Features
+## 📚 Table of Contents
 
-- Text preprocessing: Convert text to lowercase and remove non-alphanumeric characters.
-- Easy integration with machine learning pipelines.
+- [✨ Features](#-features)
+- [🚀 Installation and Development](#-installation-and-development)
+- [📦 Requirements](#-requirements)
+- [💻 Usage](#-usage)
+- [🔄 Release Workflow](#-release-workflow)
+- [📝 License](#-license)
 
-## Installation
+## ✨ Features
+
+- Text preprocessing: Convert text to lowercase and remove non-alphanumeric characters
+- Stemming of words using Porter Stemmer
+- Stopwords removal (with 'not' preserved for sentiment analysis)
+- Easy integration with machine learning pipelines
+- Pandas DataFrame support
+
+## 🚀 Installation and Development
 
 To install the library, use the following command:
 
@@ -17,27 +27,13 @@ To install the library, use the following command:
 pip install .
 ```
 
-## Requirements
+Alternatively, you can build the package locally and install it:
 
-The library requires Python 3.10 or higher and the following dependencies:
-
-- pandas>=2.2.0
-- scikit-learn>=1.4.0
-- numpy>=1.26.0
-
-## Usage
-
-Here is an example of how to use the `preprocessing` function:
-
-```python
-from lib_ml.preprocessing import preprocessing
-
-text = "Hello, World!"
-cleaned_text = preprocessing(text)
-print(cleaned_text)  # Output: "hello world"
+```bash
+pip install build
+python -m build
+pip install dist/*.whl
 ```
-
-## Development
 
 To set up a development environment, install the optional build tools:
 
@@ -45,23 +41,53 @@ To set up a development environment, install the optional build tools:
 pip install -r requirements.txt
 ```
 
-## License
+## 📦 Requirements
 
-TODO
+The library requires Python 3.10 or higher and the following dependencies:
 
-## Contributing
+- nltk>=3.6
+- pandas>=1.0
 
-TODO
+## 💻 Usage
 
-## Release Workflow
+Here is an example of how to use the `preprocess_reviews` function:
 
-The project uses GitHub Actions to automate the release process. When a new tag is pushed in the format `v<MAJOR>.<MINOR>.<PATCH>`, the workflow will:
+```python
+import pandas as pd
+from lib_ml.preprocessing import preprocess_reviews
 
-1. Parse the version from the tag.
-2. Inject the version into `pyproject.toml`.
-3. Build the package.
-4. Optionally upload the artifacts.
+# Create a sample dataset
+data = {'Review': ["This movie was great! I loved it.",
+                  "Terrible experience, would not recommend."]}
+df = pd.DataFrame(data)
 
-## Contact
+# Preprocess the reviews
+processed_corpus = preprocess_reviews(df)
+print(processed_corpus)
+# Output: ['movi great love', 'terribl experi not recommend']
+```
 
-For any questions or issues, please contact the maintainers of the repository.
+The preprocessing includes:
+
+- Removing non-alphabetic characters
+- Converting to lowercase
+- Removing stopwords (except 'not')
+- Stemming words
+
+## 🔄 Release Workflow
+
+The project uses GitHub Actions to automate the release process with GitVersion. When a new tag is pushed in the format `v<MAJOR>.<MINOR>.<PATCH>`, the workflow will:
+
+1. Parse the version from the tag
+2. Inject the version into `pyproject.toml`
+3. Build the package
+
+Versioning conventions:
+
+- Use `#major` in commit message for breaking changes
+- Use `#minor` in commit message for new features
+- Use `#patch` in commit message for bug fixes
+
+## 📝 License
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
