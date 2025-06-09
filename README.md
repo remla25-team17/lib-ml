@@ -47,6 +47,7 @@ The library requires Python 3.10 or higher and the following dependencies:
 
 - nltk>=3.6
 - pandas>=1.0
+- sentence-transformers>=2.2.2
 
 ## 💻 Usage
 
