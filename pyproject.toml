@@ -9,7 +9,8 @@ description = "Shared preprocessing logic for model-training and model-service"
 requires-python = ">=3.10"
 dependencies = [
   "nltk>=3.6",
-  "pandas>=1.0"
+  "pandas>=1.0",
+  "sentence-transformers>=2.2.2"
 ]
 
 [tool.setuptools]

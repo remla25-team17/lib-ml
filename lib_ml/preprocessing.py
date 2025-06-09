@@ -3,10 +3,12 @@ import nltk
 
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
+from sentence_transformers import SentenceTransformer
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
 nltk.download('stopwords')
 
-# Define the preprocessing function
+#Define the preprocessing function
 def preprocess_reviews(dataset):
     """
     Preprocesses text data from a dataset.
@@ -31,6 +33,16 @@ def preprocess_reviews(dataset):
 
     return corpus
 
+
+def embed_reviews(dataset):
+    """
+    Embeds text data from a dataset.
+    """
+    embeddings = []
+    for i in range(len(dataset)):
+        embeddings.append(model.encode(dataset['Review'][i]))
+
+    return embeddings
 
 def preprocess_text(text, all_stopwords=None, ps=None):
     """
